@@ -1,22 +1,56 @@
 import React, {useState} from "react";
+import ReactAutocomplete from "react-autocomplete";
 import { Waypoint } from "react-waypoint";
 import { useCatImages } from "./hooks/useCatImages";
+import { useCatBreeds } from "./hooks/useCatBreeds";
 import "./App.css";
 
 function App() {
+  const catBreads = useCatBreeds();
+  const getSearchById = (name) => {
+    return name ? (catBreads.filter((bread)=>bread.name === name)[0]?.id || "") : ""
+  }
+
   const [page, setPage] = useState(0);
-  const images = useCatImages(page);
+  const [search, setSearch] = useState("")
+  const images = useCatImages(page, getSearchById(search));
+  const [infinityScroll, setInfinityScroll] = useState(true)
+
   const [showDetails, setShowDetails] = useState(false)
 
     const loadMore = () => {
-      if(images.length > 0 && images.length + 5 <= 20){
+      if(infinityScroll && images.length > 0 && images.length + 5 <= 20){
           setPage(page + 1)
       }
-
     }
 
   return (
     <div id={'container'}>
+      {showDetails && <div className={"search-wrapper"}>
+        <b>Search By Breed</b>
+        <ReactAutocomplete
+          items={catBreads}
+          shouldItemRender={(item, value) => item.name.toLowerCase().indexOf(value.toLowerCase()) > -1}
+          getItemValue={item => item.name}
+          renderItem={(item, highlighted) =>
+            <div
+              key={item.id}
+              style={{ backgroundColor: highlighted ? '#eee' : 'transparent'}}
+            >
+              {item.name}
+            </div>
+          }
+          value={search}
+          onChange={(e)=>{
+            setSearch(e.target.value)}
+        }
+          onSelect={value => {
+            setInfinityScroll(false)
+            setPage(0)
+            setSearch(value)
+          }}
+        />
+      </div>}
         <div className={"show-detail-toggle-btn"}>
             <b>Show Details</b>
             <label className="switch" >

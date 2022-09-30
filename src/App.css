@@ -78,3 +78,18 @@ input:checked + .slider:before {
 .show-detail-toggle-btn label{
   margin-left: 15px;
 }
+
+.search-wrapper{
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.search-wrapper b{
+  margin-right: 10px;
+}
+
+.search-wrapper input{
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: solid 1px grey;
+}
