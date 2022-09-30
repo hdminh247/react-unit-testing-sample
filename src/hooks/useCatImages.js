@@ -2,10 +2,13 @@ import { useState, useEffect} from "react";
 
 export function useCatImages(page, search) {
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
   const limit = 5;
 
   const getCatImages = (page = 0, search) => {
     try {
+      setLoading(true)
       fetch(
           `https://api.thecatapi.com/v1/images/search?limit=${limit}&page=${page}&has_breeds=1${search ? `&breed_ids=${search}` : ""}`,
           {headers: {
@@ -18,10 +21,16 @@ export function useCatImages(page, search) {
           setImages(images.concat(await res.json()))
         }
 
+        setError("")
+
+        setLoading(false)
+
       });
     } catch (e) {
       console.error("fetch failed!");
       console.error(e);
+      setError("Fail to fetch images")
+      setLoading(true)
     }
   }
 
@@ -30,5 +39,5 @@ export function useCatImages(page, search) {
   },[page, search])
 
 
-  return images;
+  return {loading, images, error};
 }

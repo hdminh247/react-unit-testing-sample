@@ -4,6 +4,7 @@ import { Waypoint } from "react-waypoint";
 import { useCatImages } from "./hooks/useCatImages";
 import { useCatBreeds } from "./hooks/useCatBreeds";
 import "./App.css";
+import Spinner from "./Spinner";
 
 function App() {
   const catBreads = useCatBreeds();
@@ -13,10 +14,10 @@ function App() {
 
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("")
-  const images = useCatImages(page, getSearchById(search));
+  const { images, loading, error } = useCatImages(page, getSearchById(search));
   const [infinityScroll, setInfinityScroll] = useState(true)
-
   const [showDetails, setShowDetails] = useState(false)
+  const [mode, setMode] = useState("") // three-col, one-col
 
     const loadMore = () => {
       if(infinityScroll && images.length > 0 && images.length + 5 <= 20){
@@ -63,9 +64,19 @@ function App() {
         </div>
 
       <h1>Images of Cats</h1>
-      <ul id={"cat-list"}>
+      <div className={"layout-selection"}>
+        <label><b>Layout</b></label>
+        <select onChange={(e)=>{setMode(e.target.value || "")}}>
+          <option value={""}>Default</option>
+          <option value={"one-col"}>1 Column</option>
+          <option value={"three-col"}>3 Columns</option>
+        </select>
+      </div>
+
+      {error && <p className={"error-message"}>{error}</p>}
+      {!error && <div id={"cat-list"} className={`row ${mode}`}>
         {images.map(({ id, height, url, width, breeds }, index) => (
-          <li key={index}>
+          <div key={index} className={"cat-image"}>
               {showDetails &&
                   <div className={"cat-info"}>
                       <b>Breads Details</b>
@@ -82,12 +93,14 @@ function App() {
                   })}
                   </ul>
                   </div>}
-
-
             <img src={url} alt={id} height={height} width={width} />
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>}
+      {loading && <div className={"spinner-wrapper"}>
+        <Spinner />
+      </div>}
+
         <Waypoint onEnter={loadMore} fireOnRapidScroll={false} />
     </div>
   );
