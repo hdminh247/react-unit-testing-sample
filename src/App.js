@@ -1,13 +1,22 @@
 import React, {useState} from "react";
+import { Waypoint } from "react-waypoint";
 import { useCatImages } from "./hooks/useCatImages";
 import "./App.css";
 
 function App() {
-  const images = useCatImages();
+  const [page, setPage] = useState(0);
+  const images = useCatImages(page);
   const [showDetails, setShowDetails] = useState(false)
 
+    const loadMore = () => {
+      if(images.length > 0 && images.length + 5 <= 20){
+          setPage(page + 1)
+      }
+
+    }
+
   return (
-    <>
+    <div id={'container'}>
         <div className={"show-detail-toggle-btn"}>
             <b>Show Details</b>
             <label className="switch" >
@@ -20,9 +29,9 @@ function App() {
         </div>
 
       <h1>Images of Cats</h1>
-      <ul>
-        {images.map(({ id, height, url, width, breeds }) => (
-          <li key={id}>
+      <ul id={"cat-list"}>
+        {images.map(({ id, height, url, width, breeds }, index) => (
+          <li key={index}>
               {showDetails &&
                   <div className={"cat-info"}>
                       <b>Breads Details</b>
@@ -45,7 +54,8 @@ function App() {
           </li>
         ))}
       </ul>
-    </>
+        <Waypoint onEnter={loadMore} fireOnRapidScroll={false} />
+    </div>
   );
 }
 

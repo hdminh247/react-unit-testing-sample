@@ -1,7 +1,6 @@
 import React from "react";
-import { render, unmountComponentAtNode } from "react-dom";
+import { render } from "react-dom";
 import { act } from "react-dom/test-utils";
-import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import App from './App';
