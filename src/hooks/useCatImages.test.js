@@ -37,9 +37,9 @@ describe("useCatImages", () => {
     // See, e.g.: https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning#2-when-testing-custom-hooks
     await act(() => Promise.resolve());
 
-    expect(result.current.length).toBe(2);
-    expect(result.current[0].id).toBe("15o");
-    expect(result.current[1].url).toBe(
+    expect(result.current.images.length).toBe(2);
+    expect(result.current.images[0].id).toBe("15o");
+    expect(result.current.images[1].url).toBe(
       "https://cdn2.thecatapi.com/images/217.jpg"
     );
   });
